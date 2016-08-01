@@ -34,7 +34,6 @@ if err != nil {
 }
 
 fmt.Println(out)
-}
 ```
 
 Running a container in the background:
@@ -63,6 +62,5 @@ if err != nil {
 fmt.Println(out)
 
 err := container.Stop()
-}
 ```
 
