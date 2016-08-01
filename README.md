@@ -12,7 +12,7 @@ import "github.com/docker/docker-sdk-go"
 
 Running a container:
 
-```
+```go
 client, err := docker.FromEnv()
 if err != nil {
     return err
@@ -39,7 +39,7 @@ fmt.Println(out)
 
 Running a container in the background:
 
-```
+```go
 client, err := docker.FromEnv()
 if err != nil {
     return err
