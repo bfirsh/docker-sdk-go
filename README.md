@@ -23,12 +23,12 @@ opts := &docker.RunOptions{
     Cmd: []string{"echo", "hello world"},
 }
 
-container, err := client.Containers.Run(nil, opts)
+container, err := client.Containers.Run(opts)
 if err != nil {
     return err
 }
 
-out, err := container.Logs()
+out, err := container.Logs(nil)
 if err != nil {
     return err
 }
