@@ -6,6 +6,7 @@ import (
 	"github.com/docker/engine-api/types/container"
 	"golang.org/x/net/context"
 	"io/ioutil"
+	"time"
 )
 
 // RunOptions is the configuration passed to Containers.Run()
@@ -39,6 +40,11 @@ func (container *Container) Start() error {
 	return container.client.ContainerStart(context.Background(), container.ID, options)
 }
 
+// Stop a container
+func (container *Container) Stop(timeout *time.Duration) error {
+	return container.client.ContainerStop(context.Background(), container.ID, timeout)
+}
+
 // Wait waits for a container to finish then returns its exit code
 func (container *Container) Wait() (int, error) {
 	return container.client.ContainerWait(context.Background(), container.ID)
@@ -68,15 +74,16 @@ func (containers *ContainerCollection) Run(options *RunOptions) (*Container, err
 			if err != nil {
 				return nil, err
 			}
+		} else {
+			return nil, err
 		}
-		return nil, err
 	}
 	container := &Container{
 		ID:     resp.ID,
 		client: containers.client,
 	}
 	err = container.Start()
-	if options.Detach {
+	if err != nil || options.Detach {
 		return container, err
 	}
 	_, err = container.Wait()
