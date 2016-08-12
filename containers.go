@@ -10,8 +10,9 @@ import (
 
 // RunOptions is the configuration passed to Containers.Run()
 type RunOptions struct {
-	Image string
-	Cmd   []string
+	Image  string
+	Cmd    []string
+	Detach bool
 }
 
 // Container represents a container
@@ -38,6 +39,11 @@ func (container *Container) Start() error {
 	return container.client.ContainerStart(context.Background(), container.ID, options)
 }
 
+// Wait waits for a container to finish then returns its exit code
+func (container *Container) Wait() (int, error) {
+	return container.client.ContainerWait(context.Background(), container.ID)
+}
+
 // ContainerCollection represents all possible containers
 type ContainerCollection struct {
 	client *client.Client
@@ -49,6 +55,7 @@ func (containers *ContainerCollection) Run(options *RunOptions) (*Container, err
 		Image: options.Image,
 		Cmd:   options.Cmd,
 	}
+	// TODO: allow setting of context
 	resp, err := containers.client.ContainerCreate(context.Background(), createConfig, nil, nil, "")
 	if err != nil {
 		return nil, err
@@ -58,5 +65,10 @@ func (containers *ContainerCollection) Run(options *RunOptions) (*Container, err
 		client: containers.client,
 	}
 	err = container.Start()
+	if options.Detach {
+		return container, err
+	}
+	_, err = container.Wait()
+	// TODO: return error on exitCode?
 	return container, err
 }
