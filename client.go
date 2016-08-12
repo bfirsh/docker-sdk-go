@@ -12,10 +12,12 @@ func FromEnv() (*Client, error) {
 	return &Client{
 		APIClient:  cl,
 		Containers: &ContainerCollection{client: cl},
+		Images:     &ImageCollection{client: cl},
 	}, nil
 }
 
 type Client struct {
 	APIClient  *client.Client
 	Containers *ContainerCollection
+	Images     *ImageCollection
 }

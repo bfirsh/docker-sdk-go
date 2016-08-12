@@ -58,6 +58,17 @@ func (containers *ContainerCollection) Run(options *RunOptions) (*Container, err
 	// TODO: allow setting of context
 	resp, err := containers.client.ContainerCreate(context.Background(), createConfig, nil, nil, "")
 	if err != nil {
+		if client.IsErrImageNotFound(err) {
+			images := &ImageCollection{client: containers.client}
+			if _, err = images.Pull(options.Image); err != nil {
+				return nil, err
+			}
+			// retry
+			resp, err = containers.client.ContainerCreate(context.Background(), createConfig, nil, nil, "")
+			if err != nil {
+				return nil, err
+			}
+		}
 		return nil, err
 	}
 	container := &Container{
