@@ -2,7 +2,6 @@ package docker
 
 import (
 	"github.com/stretchr/testify/assert"
-	"io/ioutil"
 	"testing"
 )
 
@@ -21,8 +20,5 @@ func TestSimpleRun(t *testing.T) {
 	out, err := container.Logs(nil)
 	assert.Nil(t, err)
 
-	s, err := ioutil.ReadAll(out)
-	assert.Nil(t, err)
-
-	assert.Contains(t, string(s), "hello world")
+	assert.Contains(t, string(out), "hello world")
 }

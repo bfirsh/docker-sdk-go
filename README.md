@@ -33,7 +33,5 @@ if err != nil {
     return err
 }
 
-fmt.Println(out)
+fmt.Printf("%s", out)
 ```
-
-

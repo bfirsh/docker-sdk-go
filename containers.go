@@ -5,7 +5,7 @@ import (
 	"github.com/docker/engine-api/types"
 	"github.com/docker/engine-api/types/container"
 	"golang.org/x/net/context"
-	"io"
+	"io/ioutil"
 )
 
 // RunOptions is the configuration passed to Containers.Run()
@@ -21,11 +21,15 @@ type Container struct {
 }
 
 // Logs returns logs for a container
-func (container *Container) Logs(options *types.ContainerLogsOptions) (io.ReadCloser, error) {
+func (container *Container) Logs(options *types.ContainerLogsOptions) ([]byte, error) {
 	if options == nil {
 		options = &types.ContainerLogsOptions{ShowStdout: true}
 	}
-	return container.client.ContainerLogs(context.Background(), container.ID, *options)
+	out, err := container.client.ContainerLogs(context.Background(), container.ID, *options)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(out)
 }
 
 // Start starts a container
