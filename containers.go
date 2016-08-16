@@ -27,6 +27,7 @@ func (container *Container) Logs(options *types.ContainerLogsOptions) ([]byte, e
 	if options == nil {
 		options = &types.ContainerLogsOptions{ShowStdout: true}
 	}
+	// TODO: figure out what to do with contexts
 	out, err := container.client.ContainerLogs(context.Background(), container.ID, *options)
 	if err != nil {
 		return nil, err
